@@ -1,0 +1,25 @@
+version: '3'
+services:
+  redis:
+    image: redis:7.2.5-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - .docker-data/redis_data:/data
+    command: ["redis-server", "--appendonly", "yes"]
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  redis-insight:
+    image: redis/redisinsight:latest
+    ports:
+      - "5540:5540" 
+    restart: always
+    depends_on:
+      - redis
+    volumes:
+      - .docker-data/redis_insight:/data
